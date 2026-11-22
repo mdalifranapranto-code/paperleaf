@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>বইঘর</title>
+<style>
+:root{--bg:#2a1d14;--ui:#1c130d;--card:#3a2a1e;--ink:#f4ead6;--mute:#b9a78d;--gold:#e0b04f;--paper:#fbf4e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241912;--ui:#150e09}}
+:root[data-theme="dark"]{--bg:#241912;--ui:#150e09}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,"Noto Sans Bengali",sans-serif;display:flex;flex-direction:column;overflow:hidden}
+button{background:#4b3727;color:var(--ink);border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:15px}
+button:active{background:var(--gold);color:#222}
+#top{display:flex;align-items:center;gap:8px;padding:10px 14px;background:linear-gradient(#3b281a,var(--ui));border-bottom:2px solid #5a4028}
+#ti{flex:1;font:700 19px Georgia,"Noto Serif Bengali",serif;color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ra{display:none;gap:6px}
+main{flex:1;position:relative;min-height:0}
+.v{position:absolute;inset:0;overflow-y:auto;display:none;padding:14px}
+.v.on{display:block}
+#v-read.on{display:flex;flex-direction:column;padding:0}
+nav{display:flex;background:var(--ui);border-top:1px solid #4b3727}
+nav button{flex:1;background:none;border-radius:0;padding:10px 0 8px;font-size:12px;color:var(--mute);border-top:3px solid transparent}
+nav button b{display:block;font-size:20px;font-weight:400}
+nav button.on{color:var(--gold);border-top-color:var(--gold)}
+#stat{color:var(--mute);font-size:13px;margin:0 0 12px}
+#grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 14px}
+.bk{position:relative;cursor:pointer}
+.bk img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:3px 8px 8px 3px;box-shadow:0 6px 14px rgba(0,0,0,.55),inset 6px 0 8px rgba(0,0,0,.3);background:var(--paper)}
+.bk .t{font:600 14px Georgia,"Noto Serif Bengali",serif;margin:8px 0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk small{color:var(--mute);font-size:12px}
+.pr{height:5px;background:#0006;border-radius:3px;margin:5px 0;overflow:hidden}.pr i{display:block;height:100%;background:var(--gold)}
+.bk .x{position:absolute;top:6px;right:6px;padding:4px 8px;font-size:12px;background:#000a}
+.add{background:var(--gold);color:#251a10;font-weight:700;width:100%;margin-bottom:14px;padding:14px;font-size:16px}
+.mt{color:var(--mute);text-align:center;line-height:1.7;margin:30px 10px}
+#stage{flex:1;min-height:0;overflow-y:auto;perspective:1600px;padding:14px 12px 20px;text-align:center;background:radial-gradient(ellipse at top,#4a3523,var(--bg))}
+#sheet{position:relative;display:inline-block;background:var(--paper);box-shadow:2px 2px 0 #e8dfc8,4px 4px 0 #ddd3b8,6px 8px 16px rgba(0,0,0,.55);border-radius:2px 6px 6px 2px;text-align:left}
+#sheet::before{content:"";position:absolute;inset:0 auto 0 0;width:20px;background:linear-gradient(90deg,rgba(0,0,0,.25),transparent);z-index:5;pointer-events:none}
+#sheet::after{content:"";position:absolute;right:0;bottom:0;width:26px;height:26px;background:linear-gradient(135deg,transparent 50%,#d8cdb0 50%,#efe6cc);box-shadow:-2px -2px 4px rgba(0,0,0,.15);z-index:5;pointer-events:none}
+#rib{display:none;position:absolute;top:0;right:22px;width:20px;height:42px;background:#c0392b;clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);z-index:6}
+#cv{display:block}#hl,#tl{position:absolute;inset:0}#hl{pointer-events:none}
+#hl div{position:absolute;mix-blend-mode:multiply;border-radius:2px}
+#tl{line-height:1}#tl span,#tl br{position:absolute;color:transparent;white-space:pre;transform-origin:0 0}
+#tl ::selection{background:rgba(40,120,255,.35)}
+.night #cv{filter:invert(.92) hue-rotate(180deg)}.night #hl div{mix-blend-mode:normal;opacity:.4}
+#pgbar{display:flex;gap:8px;align-items:center;justify-content:center;padding:8px;background:var(--ui)}
+#pn{width:54px;text-align:center;font-size:15px;padding:8px 2px;border-radius:8px;border:0}
+#sel{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(128px + env(safe-area-inset-bottom,0px));background:var(--ui);padding:8px 10px;border-radius:16px;gap:10px;align-items:center;box-shadow:0 4px 18px rgba(0,0,0,.6);z-index:20}
+#sel i{width:34px;height:34px;border-radius:50%;display:inline-block;border:2px solid #fff6}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{padding:7px 12px;font-size:13px;border-radius:20px}.chip.on{background:var(--gold);color:#222}
+#q{flex:1;min-width:0;box-sizing:border-box;width:100%;padding:11px 14px;border-radius:12px;border:1px solid #6b5a4a;background:#2f2218;color:var(--ink);font:inherit}
+.card{display:flex;gap:10px;margin:12px 0;padding:12px;background:var(--card);border-radius:14px}
+.card .c{width:6px;border-radius:3px;flex:none}.card .m{flex:1;min-width:0}
+.pg{font-size:12px;color:var(--gold);flex:1;cursor:pointer}
+.ic{padding:3px 8px;font-size:16px;background:none}
+.qt{font:15px/1.55 Georgia,"Noto Serif Bengali",serif;margin:6px 0 8px}
+textarea{width:100%;box-sizing:border-box;min-height:56px;background:#241912;color:var(--ink);border:1px solid #6b5a4a;border-radius:10px;padding:9px;font:inherit;font-size:14px}
+.flash{background:var(--paper);color:#2a1d14;border-radius:6px 16px 16px 6px;padding:22px 20px;margin:16px 0;min-height:150px;box-shadow:3px 4px 0 #ddd3b8,0 8px 18px rgba(0,0,0,.5)}
+.fq{font:20px/1.6 Georgia,"Noto Serif Bengali",serif;margin:10px 0}.fa{border-top:1px dashed #b8a98a;margin-top:14px;padding-top:12px;font-size:16px;line-height:1.6;color:#6a3d12}
+.flash .pg{color:#8a6a2a}
+.big{width:100%;padding:14px;font-size:16px;margin-top:8px}.ok{background:#3f7d4e}.no{background:#9a4a3a}
+</style></head>
+<body>
+<div id="top"><span id="ti">বইঘর</span><span id="ra" class="row"><button id="bm">🔖</button><button id="bn">🌙</button></span></div>
+<main>
+ <section class="v on" id="v-shelf">
+  <p id="stat"></p>
+  <button class="add" id="addb">＋ নতুন PDF বই যোগ করুন</button>
+  <div id="grid"></div>
+  <p class="mt" id="shempty">তাক খালি। একটা PDF যোগ করুন। বই, হাইলাইট আর নোট সব এই ফোনে সেভ থাকবে, পরে এসে আবার যেখান থেকে ছেড়েছিলেন সেখান থেকেই শুরু করতে পারবেন।</p>
+ </section>
+ <section class="v" id="v-read">
+  <div id="stage"><div id="sheet"><div id="rib"></div><canvas id="cv"></canvas><div id="hl"></div><div id="tl"></div></div></div>
+  <div id="pgbar"><button id="pv">◀</button><input id="pn" type="number" min="1" inputmode="numeric"><span id="tt"></span><button id="nx">▶</button><button id="an">＋ নোট</button></div>
+ </section>
+ <section class="v" id="v-notes">
+  <input id="q" placeholder="🔍 নোট বা হাইলাইটে খুঁজুন...">
+  <div id="chips" class="row" style="margin:10px 0">
+   <button class="chip" id="sc"></button>
+   <button class="chip on" data-f="all">সব</button><button class="chip" data-f="star">★</button><button class="chip" data-f="note">✎ নোট আছে</button><button class="chip" data-f="mark">🔖</button>
+   <button class="chip" data-f="#ffe14d" style="background:#ffe14d;color:#222">●</button><button class="chip" data-f="#8ee88e" style="background:#8ee88e;color:#222">●</button><button class="chip" data-f="#ff9fc1" style="background:#ff9fc1;color:#222">●</button><button class="chip" data-f="#8fd3ff" style="background:#8fd3ff;color:#222">●</button>
+  </div>
+  <div id="nl"></div>
+ </section>
+ <section class="v" id="v-rev"><div id="rv"></div></section>
+</main>
+<div id="sel"><i data-c="#ffe14d" style="background:#ffe14d"></i><i data-c="#8ee88e" style="background:#8ee88e"></i><i data-c="#ff9fc1" style="background:#ff9fc1"></i><i data-c="#8fd3ff" style="background:#8fd3ff"></i><button id="sn">✎ নোট</button></div>
+<nav><button data-t="shelf"><b>📚</b>তাক</button><button data-t="read"><b>📖</b>পড়া</button><button data-t="notes"><b>📝</b>নোট খাতা</button><button data-t="rev"><b>🧠</b>রিভিশন</button></nav>
+<input type="file" id="fi" accept="application/pdf" hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const el=(t,c,x,k)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;if(k)e.append(...k);return e};
+let books=[],B=null,pdf=null,cur=1,busy=false,scope='cur',filt='all',q='',tab='shelf',night=false;
+const dbp=new Promise((ok,no)=>{const r=indexedDB.open('boighor',1);r.onupgradeneeded=()=>{r.result.createObjectStore('b',{keyPath:'id'});r.result.createObjectStore('f',{keyPath:'id'})};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+const run=async(s,m,f)=>{const d=await dbp;return new Promise((ok,no)=>{const t=d.transaction(s,m);let r;t.oncomplete=()=>ok(r&&r.result);t.onerror=()=>no(t.error);r=f(t)})};
+const putBook=b=>run('b','readwrite',t=>t.objectStore('b').put(b)).catch(()=>{});
+const delBook=id=>run(['b','f'],'readwrite',t=>{t.objectStore('b').delete(id);return t.objectStore('f').delete(id)});
+let tm;const save=()=>{clearTimeout(tm);tm=setTimeout(()=>B&&putBook(B),300)};
+const pool=()=>(scope=='cur'&&B?[B]:books).flatMap(b=>b.items.map(i=>({i,b})));
+const inScope=()=>scope=='cur'&&B;
+
+function show(t){
+  tab=t=='read'&&!B?'shelf':t;
+  document.querySelectorAll('.v').forEach(v=>v.classList.toggle('on',v.id=='v-'+tab));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==tab));
+  $('#ra').style.display=tab=='read'?'flex':'none';$('#ti').textContent=tab=='read'?B.name:'বইঘর';$('#sel').style.display='none';
+  if(tab=='shelf')renderShelf();if(tab=='notes')renderNotes();if(tab=='rev')startRev();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+
+function renderShelf(){
+  const g=$('#grid');g.innerHTML='';
+  $('#stat').textContent=books.length+'টা বই · '+books.reduce((a,b)=>a+b.items.length,0)+'টা হাইলাইট ও নোট';
+  $('#shempty').style.display=books.length?'none':'block';
+  books.slice().sort((a,b)=>b.t-a.t).forEach(b=>{
+    const im=el('img');im.src=b.cover;const pr=el('div','pr',null,[el('i')]);pr.firstChild.style.width=Math.round(b.page/b.pages*100)+'%';
+    const x=el('button','x','✕');
+    x.onclick=async e=>{e.stopPropagation();if(x.dataset.s){await delBook(b.id);books=books.filter(k=>k!==b);if(B===b){B=null;pdf=null}renderShelf()}else{x.dataset.s=1;x.textContent='মুছবেন?'}};
+    const c=el('div','bk',null,[im,x,el('div','t',b.name),pr,el('small',0,'পাতা '+b.page+'/'+b.pages+' · '+b.items.length+' নোট')]);
+    c.onclick=()=>openBook(b.id);g.append(c);
+  });
+}
+$('#addb').onclick=()=>$('#fi').click();
+$('#fi').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{
+    const buf=await f.arrayBuffer();const p=await pdfjsLib.getDocument({data:buf.slice(0)}).promise;
+    const pg=await p.getPage(1),v0=pg.getViewport({scale:1}),v=pg.getViewport({scale:220/v0.width}),c=document.createElement('canvas');
+    c.width=v.width;c.height=v.height;await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;
+    const b={id:'b'+Date.now(),name:f.name.replace(/\.pdf$/i,''),pages:p.numPages,page:1,cover:c.toDataURL('image/jpeg',.7),items:[],marks:[],t:Date.now()};
+    await run('f','readwrite',t=>t.objectStore('f').put({id:b.id,blob:new Blob([buf],{type:'application/pdf'})}));
+    await putBook(b);books.push(b);openBook(b.id);
+  }catch(x){alert('PDF যোগ করা যায়নি')}
+};
+async function openBook(id,page){
+  const b=books.find(x=>x.id==id);if(!b)return;
+  if(B!==b||!pdf){
+    const r=await run('f','readonly',t=>t.objectStore('f').get(id));if(!r){alert('ফাইল পাওয়া যায়নি');return}
+    pdf=await pdfjsLib.getDocument({data:await r.blob.arrayBuffer()}).promise;B=b;
+  }
+  $('#tt').textContent='/ '+B.pages;show('read');busy=false;await go(page||B.page||1,0);
+}
+
+const sheet=$('#sheet'),cv=$('#cv'),tl=$('#tl'),hl=$('#hl'),stage=$('#stage');
+async function render(n){
+  const p=await pdf.getPage(n),W=stage.clientWidth-26,sc=W/p.getViewport({scale:1}).width,v=p.getViewport({scale:sc}),d=window.devicePixelRatio||1;
+  cv.width=v.width*d;cv.height=v.height*d;cv.style.width=v.width+'px';cv.style.height=v.height+'px';
+  sheet.style.width=v.width+'px';sheet.style.height=v.height+'px';
+  await p.render({canvasContext:cv.getContext('2d'),viewport:v,transform:d!=1?[d,0,0,d,0,0]:null}).promise;
+  tl.innerHTML='';tl.style.setProperty('--scale-factor',sc);
+  try{pdfjsLib.renderTextLayer({textContentSource:await p.getTextContent(),container:tl,viewport:v,textDivs:[]})}catch(e){}
+  drawHl();
+}
+async function go(n,dir){
+  if(!pdf||busy||n<1||n>pdf.numPages)return;busy=true;
+  if(dir){sheet.style.transformOrigin=dir>0?'left center':'right center';sheet.style.transition='transform .28s ease-in,opacity .28s';sheet.style.transform='rotateY('+(dir>0?-80:80)+'deg)';sheet.style.opacity=.2;await sleep(280)}
+  cur=n;await render(n);
+  if(dir){sheet.style.transition='none';sheet.style.transformOrigin=dir>0?'right center':'left center';sheet.style.transform='rotateY('+(dir>0?80:-80)+'deg)';void sheet.offsetWidth;sheet.style.transition='transform .3s ease-out,opacity .3s';sheet.style.transform='none';sheet.style.opacity=1}
+  stage.scrollTop=0;B.page=n;B.t=Date.now();save();$('#pn').value=n;$('#rib').style.display=B.marks.includes(n)?'block':'none';busy=false;
+}
+function drawHl(){
+  hl.innerHTML='';
+  B.items.filter(i=>i.page==cur).forEach(i=>i.rects.forEach(r=>{const d=el('div');d.style.cssText='background:'+i.color+';left:'+r[0]*100+'%;top:'+r[1]*100+'%;width:'+r[2]*100+'%;height:'+r[3]*100+'%';hl.append(d)}));
+}
+$('#pv').onclick=()=>go(cur-1,-1);$('#nx').onclick=()=>go(cur+1,1);
+$('#pn').onchange=e=>go(+e.target.value,e.target.value>cur?1:-1);
+$('#bn').onclick=()=>{night=!night;sheet.classList.toggle('night',night);$('#bn').textContent=night?'☀️':'🌙'};
+$('#bm').onclick=()=>{const k=B.marks.indexOf(cur);k<0?B.marks.push(cur):B.marks.splice(k,1);$('#rib').style.display=k<0?'block':'none';save()};
+stage.addEventListener('click',e=>{if(String(getSelection()))return;const x=e.clientX/innerWidth;if(x<.2)go(cur-1,-1);else if(x>.8)go(cur+1,1)});
+let tx,ty;stage.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+stage.addEventListener('touchend',e=>{if(String(getSelection()))return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>70&&Math.abs(dy)<50)go(cur+(dx<0?1:-1),dx<0?1:-1)},{passive:true});
+document.addEventListener('selectionchange',()=>{const s=getSelection();$('#sel').style.display=tab=='read'&&s.rangeCount&&!s.isCollapsed&&tl.contains(s.anchorNode)?'flex':'none'});
+$('#sel').addEventListener('pointerdown',e=>e.preventDefault());
+function toNotes(id){scope='cur';filt='all';q='';$('#q').value='';show('notes');renderNotes(id)}
+function addHl(c,withNote){
+  const s=getSelection();if(!s.rangeCount||s.isCollapsed)return;const b=sheet.getBoundingClientRect();
+  const rects=[...s.getRangeAt(0).getClientRects()].filter(x=>x.width>1).map(x=>[(x.left-b.left)/b.width,(x.top-b.top)/b.height,x.width/b.width,x.height/b.height]);
+  const it={id:Date.now(),page:cur,color:c,text:s.toString().trim(),note:'',rects,star:false};
+  B.items.push(it);putBook(B);drawHl();s.removeAllRanges();$('#sel').style.display='none';if(withNote)toNotes(it.id);
+}
+document.querySelectorAll('#sel i').forEach(i=>i.onclick=()=>addHl(i.dataset.c,false));
+$('#sn').onclick=()=>addHl('#e0b04f',true);
+$('#an').onclick=()=>{const it={id:Date.now(),page:cur,color:'#e0b04f',text:'',note:'',rects:[],star:false};B.items.push(it);putBook(B);toNotes(it.id)};
+
+function renderNotes(focus){
+  document.querySelectorAll('#chips [data-f]').forEach(c=>c.classList.toggle('on',c.dataset.f==filt));
+  $('#sc').textContent=inScope()?'📖 এই বই':'📚 সব বই';
+  const L=$('#nl');L.innerHTML='';const s=q.trim().toLowerCase();
+  if(filt=='mark'){
+    (inScope()?[B]:books).forEach(b=>b.marks.slice().sort((x,y)=>x-y).forEach(p=>{const c=el('div','card',null,[el('div','pg','🔖 '+b.name+' · পাতা '+p)]);c.onclick=()=>openBook(b.id,p);L.append(c)}));
+    if(!L.children.length)L.append(el('p','mt','কোনো বুকমার্ক নেই। পড়ার সময় উপরের 🔖 চাপুন।'));return;
+  }
+  const a=pool().filter(({i,b})=>(filt=='all'||(filt=='star'?i.star:filt=='note'?i.note:i.color==filt))&&(!s||(i.text+' '+i.note+' '+b.name).toLowerCase().includes(s)));
+  a.sort((x,y)=>x.b.name.localeCompare(y.b.name)||x.i.page-y.i.page||x.i.id-y.i.id);
+  if(!a.length)L.append(el('p','mt','এখানে কিছু নেই। বই পড়ার সময় লেখা চেপে ধরে হাইলাইট করুন, সব এখানে জমা হবে।'));
+  a.forEach(({i,b})=>{
+    const hd=el('div','pg',(inScope()?'':b.name+' · ')+'পাতা '+i.page+' →');hd.onclick=()=>openBook(b.id,i.page);
+    const sb=el('button','ic',i.star?'★':'☆');sb.onclick=()=>{i.star=!i.star;sb.textContent=i.star?'★':'☆';putBook(b)};
+    const dl=el('button','ic','🗑');dl.onclick=()=>{if(dl.dataset.s){b.items=b.items.filter(x=>x!==i);putBook(b);renderNotes()}else{dl.dataset.s=1;dl.textContent='নিশ্চিত?'}};
+    const ta=el('textarea');ta.placeholder='নিজের ভাষায় নোট লিখুন...';ta.value=i.note;
+    ta.oninput=()=>{i.note=ta.value;clearTimeout(ta._t);ta._t=setTimeout(()=>putBook(b),400)};
+    const m=el('div','m',null,[el('div','row',null,[hd,sb,dl])]);if(i.text)m.append(el('div','qt',i.text));m.append(ta);
+    const c=el('div','c');c.style.background=i.color;L.append(el('div','card',null,[c,m]));
+    if(i.id===focus)setTimeout(()=>{ta.scrollIntoView({block:'center'});ta.focus()},80);
+  });
+}
+$('#q').oninput=e=>{q=e.target.value;renderNotes()};
+$('#sc').onclick=()=>{scope=scope=='cur'?'all':'cur';renderNotes()};
+document.querySelectorAll('#chips [data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;renderNotes()});
+
+let rq=[],rn=0,rs=false,rstar=false;
+function startRev(){
+  rq=pool().filter(({i})=>(i.text||i.note)&&(!rstar||i.star));
+  for(let k=rq.length;k>1;){const j=Math.random()*k--|0;[rq[k],rq[j]]=[rq[j],rq[k]]}
+  rn=0;rs=false;renderRev();
+}
+function renderRev(){
+  const V=$('#rv');V.innerHTML='';
+  const sb=el('button','chip',inScope()?'📖 এই বই':'📚 সব বই');sb.onclick=()=>{scope=scope=='cur'?'all':'cur';startRev()};
+  const tb=el('button','chip'+(rstar?' on':''),'★ শুধু গুরুত্বপূর্ণ');tb.onclick=()=>{rstar=!rstar;startRev()};
+  V.append(el('div','row',null,[sb,tb]));
+  if(!rq.length){
+    V.append(el('p','mt',rn?'🎉 সব রিভিশন শেষ! '+rn+'টা মনে ছিল।':'রিভিশনের জন্য কিছু নেই। আগে বই পড়তে পড়তে হাইলাইট বা নোট করুন।'));
+    if(rn){const r=el('button','big','আবার শুরু করুন');r.onclick=startRev;V.append(r)}return;
+  }
+  const {i,b}=rq[0];
+  V.append(el('p','mt','বাকি আছে '+rq.length+'টা'));
+  const card=el('div','flash',null,[el('div','pg',b.name+' · পাতা '+i.page),el('div','fq',i.text||'পাতা '+i.page+' এ আপনার নোটটা কী ছিল?')]);
+  if(rs)card.append(el('div','fa',i.note||'(নোট নেই, পাতাটা আবার দেখে নিন)'));
+  V.append(card);
+  if(!rs){const r=el('button','big','উত্তর দেখুন');r.onclick=()=>{rs=true;renderRev()};V.append(r)}
+  else{
+    const y=el('button','big ok','✓ মনে আছে');y.onclick=()=>{rq.shift();rn++;rs=false;renderRev()};
+    const n=el('button','big no','↻ আবার দেখাও');n.onclick=()=>{rq.push(rq.shift());rs=false;renderRev()};
+    const g=el('button','big','পাতায় যান →');g.onclick=()=>openBook(b.id,i.page);V.append(y,n,g);
+  }
+}
+getBooks=()=>run('b','readonly',t=>t.objectStore('b').getAll());
+getBooks().then(r=>{books=r.map(b=>({marks:[],items:[],...b}));show('shelf')}).catch(()=>{$('#shempty').textContent='এই ব্রাউজারে বই সেভ করা যাচ্ছে না।'});
+show('shelf');
+</script></body></html>
